@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pokemon Index</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="w-25 mx-auto my-5">Pokemon Index</h2>
+        <div class="d-flex justify-content-center align-items-center">
+            <input id="pokemon-name-input" type="text" placeholder="Nhập tên Pokemon"
+                class="w-25 my-5 form-control form-control-md" spellcheck="false" />
+            <button id="search-btn" class="btn btn-primary mx-2">Tìm</button>
+        </div>
+        <div class="d-flex flex-column justify-content-center align-items-center ">
+            <p id="message" class="text-danger text-weight-bold d-none"></p>
+            <div id="card"
+                class="card card-body d-flex flex-column justify-content-center align-items-center w-25 shadow invisible">
+                <h3 class="text-uppercase text-success pt-2">sp </h3>
+                <div class="d-flex justify-content-between">
+                    <img class="w-50" src="" alt="Front" />
+                    <img class="w-50" src="" alt="Back" />
+                </div>
+                <h4 class="text-warning">Types</h4>
+                <div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $('#search-btn').click(function (e) {
+            $('#card').addClass('invisible');
+            $('#message').addClass('d-none');
+            $('#card div:last-child').empty();
+            var name = $('#pokemon-name-input').val();
+            $('#message').removeClass('d-none').text("Loadding...");
+            if (name) {
+                $.getJSON(`https://pokeapi.co/api/v2/pokemon/${name}`, function (data) {
+                    $('#card').removeClass('invisible');
+                    $('#message').empty()
+                    $('#card h3').text(data.species.name);
+                    $('#card img[alt="Front"]').attr('src', data.sprites.front_default);
+                    $('#card img[alt="Back"]').attr('src', data.sprites.back_default);
+
+                    for (let i = 0; i < data.types.length; i++) {
+                        $('#card div:last-child').append(`<i><b>${data.types[i].type.name}</b><br><i/>`);
+                    }
+                })
+                    .fail(function (error) {
+                        console.log(error);
+                        $('#message').removeClass('d-none').text("Không tìm thấy kết quả!");
+                    });
+            } else {
+                $('#message').removeClass('d-none').text("Vui lòng nhập tên POKEMON!");
+            }
+        })
+    </script>
+
+</body>
+
+</html>
